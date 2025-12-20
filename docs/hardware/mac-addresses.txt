@@ -1,0 +1,7 @@
+RBM33G factory MACs (sticker)
+
+Base MAC: 04:F4:1C:C8:A5:0E
+
+eth0 / wan : 04:F4:1C:C8:A5:0E
+lan1       : 04:F4:1C:C8:A5:0F
+lan2       : 04:F4:1C:C8:A5:10
