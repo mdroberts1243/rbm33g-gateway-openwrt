@@ -1,0 +1,41 @@
+#!/bin/sh
+# One-time first boot customization for "gateway appliance" mode.
+
+# 1) Hard-disable firewall/NAT framework.
+if [ -x /etc/init.d/firewall ]; then
+  /etc/init.d/firewall stop 2>/dev/null
+  /etc/init.d/firewall disable 2>/dev/null
+fi
+
+# 2) Hard-disable IPv6 RA/DHCPv6 server bits.
+if [ -x /etc/init.d/odhcpd ]; then
+  /etc/init.d/odhcpd stop 2>/dev/null
+  /etc/init.d/odhcpd disable 2>/dev/null
+fi
+
+# 3) Ensure dnsmasq is NOT a DHCP server (delete any dhcp sections).
+#    (We keep dnsmasq available for local caching/resolution if desired.)
+uci -q delete dhcp.lan
+uci -q delete dhcp.wan
+uci -q delete dhcp.uplink
+uci -q delete dhcp.br_lan
+
+# If any other "config dhcp" sections exist, disable them generically.
+# (OpenWrt uci doesn't have a perfect "delete all sections of type", so we do best-effort.)
+for s in $(uci show dhcp 2>/dev/null | sed -n "s/^\(dhcp\.[^=]*\)=dhcp$/\1/p"); do
+  uci -q delete "$s"
+done
+
+uci commit dhcp
+
+if [ -x /etc/init.d/dnsmasq ]; then
+  /etc/init.d/dnsmasq restart 2>/dev/null
+  /etc/init.d/dnsmasq enable 2>/dev/null
+fi
+
+# 4) Mark done (OpenWrt will remove uci-defaults scripts after running,
+#    but we remove explicitly to avoid any ambiguity).
+rm -f /etc/uci-defaults/99-gateway-mode
+
+exit 0
+

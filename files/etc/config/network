@@ -1,0 +1,24 @@
+config interface 'loopback'
+        option device 'lo'
+        option proto 'static'
+        option ipaddr '127.0.0.1'
+        option netmask '255.0.0.0'
+
+config globals 'globals'
+        option ula_prefix 'fd00:33g::/48'
+
+# Single-uplink "gateway appliance" mode:
+# - Use only the SoC "wan" netdev as the single port
+# - DHCP client for normal operation
+# - Add a fallback static address so you can always reach it
+config interface 'uplink'
+        option device 'wan'
+        option proto 'dhcp'
+        option macaddr '04:F4:1C:C8:A5:0E'
+
+config interface 'uplink_fallback'
+        option device 'wan'
+        option proto 'static'
+        option ipaddr '192.168.88.2'
+        option netmask '255.255.255.0'
+        option metric '500'
