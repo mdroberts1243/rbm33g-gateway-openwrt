@@ -1,0 +1,2 @@
+# Intentionally empty firewall config.
+# We will also disable the firewall service in a uci-defaults script.
