@@ -91,3 +91,12 @@ echo "==> Done."
 echo "    Sysupgrade: ${EXPORT_DIR}/${SYSUP}"
 echo "    Initramfs:  ${EXPORT_DIR}/${INITR}"
 echo "    Sums:       ${EXPORT_DIR}/${SUMS}"
+
+# Optional: update defconfig from current .config (explicit opt-in)
+if [ "${UPDATE_DEFCONFIG:-0}" = "1" ]; then
+    echo "==> Updating configs/rbm33g_gateway.defconfig from .config"
+    scripts/kconfig/merge_config.sh -m .config configs/rbm33g_gateway.defconfig
+    make defconfig
+    echo "==> Done with defconfig update"
+fi
+

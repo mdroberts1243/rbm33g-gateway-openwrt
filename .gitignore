@@ -41,3 +41,16 @@ git-src
 !files/etc/config/dhcp
 !files/etc/uci-defaults/
 !files/etc/uci-defaults/99-gateway-mode
+
+# --- Secrets / per-device material (never commit) ---
+files/etc/basicstation/*.key
+files/etc/basicstation/*.crt
+files/etc/basicstation/archive/
+files/etc/dropbear/
+attic/**/tc.key
+attic/**/cups.key
+
+# Local scratch / exports / staging
+attic/
+files/etc/secret/
+files/etc/secret/**
