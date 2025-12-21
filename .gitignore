@@ -33,3 +33,11 @@ git-src
 .cproject
 .ccache
 .vscode*
+# Allow committing our RBM33G build overlay
+!files/
+!files/etc/
+!files/etc/config/
+!files/etc/config/network
+!files/etc/config/dhcp
+!files/etc/uci-defaults/
+!files/etc/uci-defaults/99-gateway-mode
