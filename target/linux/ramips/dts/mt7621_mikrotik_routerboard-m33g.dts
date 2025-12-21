@@ -138,3 +138,7 @@
 &uartlite3 {
 	status = "okay";
 };
+
+&xhci {
+	status = "okay";
+};
