@@ -1,0 +1,24 @@
+#!/bin/sh
+# First-boot provisioning for Semtech Basic Station (TTN LNS)
+
+KEY_SRC="/etc/secret/basicstation/tc.key"
+KEY_DST="/etc/basicstation/tc.key"
+
+# Only proceed if init script exists
+[ -x /etc/init.d/basicstation ] || exit 0
+
+# If a provisioned key exists, install it and enable service
+if [ -s "$KEY_SRC" ]; then
+    mkdir -p /etc/basicstation
+    cp "$KEY_SRC" "$KEY_DST"
+    chmod 600 "$KEY_DST"
+
+    /etc/init.d/basicstation enable >/dev/null 2>&1
+    /etc/init.d/basicstation start  >/dev/null 2>&1
+else
+    # Do NOT enable; device requires per-unit provisioning.
+    # Operator can provision KEY_SRC and then run: /etc/init.d/basicstation enable; /etc/init.d/basicstation start
+    :
+fi
+
+exit 0
