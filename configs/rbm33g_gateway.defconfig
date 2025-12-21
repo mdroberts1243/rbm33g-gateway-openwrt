@@ -1,0 +1,17 @@
+# --- M33G Gateway feature set ---
+
+# USB host / xHCI
+CONFIG_PACKAGE_kmod-usb-core=y
+CONFIG_PACKAGE_kmod-usb3=y
+CONFIG_PACKAGE_kmod-usb-acm=y
+CONFIG_PACKAGE_usbutils=y
+
+# LoRa Basics Station
+CONFIG_PACKAGE_basicstation=y
+
+# LuCI Web UI
+CONFIG_PACKAGE_luci=y
+CONFIG_PACKAGE_luci-base=y
+CONFIG_PACKAGE_luci-ssl=y
+CONFIG_PACKAGE_uhttpd=y
+CONFIG_PACKAGE_uhttpd-mod-ubus=y
