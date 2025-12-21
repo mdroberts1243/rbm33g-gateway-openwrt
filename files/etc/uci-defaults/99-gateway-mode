@@ -33,6 +33,10 @@ if [ -x /etc/init.d/dnsmasq ]; then
   /etc/init.d/dnsmasq enable 2>/dev/null
 fi
 
+# Disable IPv4 forwarding explicitly (no routing/NAT role)
+sysctl -w net.ipv4.ip_forward=0 2>/dev/null
+echo "net.ipv4.ip_forward=0" > /etc/sysctl.d/99-gateway.conf
+
 # 4) Mark done (OpenWrt will remove uci-defaults scripts after running,
 #    but we remove explicitly to avoid any ambiguity).
 rm -f /etc/uci-defaults/99-gateway-mode
