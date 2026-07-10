@@ -51,3 +51,29 @@ location.
 This is separate from local GNSS use. The gateway should continue to retain
 the current validated fix in volatile runtime state for diagnostics,
 monitoring, and registry-update decisions.
+
+## Fixed-gateway publication policy
+
+These gateways are deployed as fixed infrastructure. GNSS is used for
+commissioning, relocation detection, diagnostics, and correction of stale
+registry coordinates. It is not used for continuous tracking.
+
+A production implementation should:
+
+- acquire several valid fixes before accepting a location;
+- require GNSS fix quality greater than zero;
+- require at least five satellites;
+- require HDOP no worse than 2.5;
+- average or otherwise reject inconsistent fixes;
+- compare the accepted fix with the last successfully published TTN
+  registry location;
+- publish only when no prior registry location is recorded or when the
+  gateway has moved materially;
+- use an initial horizontal movement threshold of 75 metres;
+- use an initial altitude threshold of 30 metres;
+- record movement beyond the threshold as a possible relocation event;
+- avoid periodic registry writes when the location has not changed;
+- persist last-published state only after a successful TTN API response.
+
+The current live fix should remain volatile under `/var/run`. Persistent
+last-published state should be written infrequently to minimize flash wear.
