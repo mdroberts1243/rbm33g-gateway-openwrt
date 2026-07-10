@@ -77,3 +77,44 @@ A production implementation should:
 
 The current live fix should remain volatile under `/var/run`. Persistent
 last-published state should be written infrequently to minimize flash wear.
+
+## Revised production design: use the EC25 NMEA port directly
+
+Further testing confirmed that the deployed Basic Station binary includes
+the Linux GPS implementation from `gps.c`.
+
+The EC25 exposes a continuous NMEA stream on:
+
+    /dev/ttyUSB1
+
+A valid observed sentence was:
+
+    $GPGGA,200035.00,4517.527623,N,07551.847321,W,1,07,0.8,133.3,M,-36.0,M,,*52
+
+Adding the following property to the `station_conf` object activates the
+existing Basic Station GPS path:
+
+    "gps": "/dev/ttyUSB1"
+
+After restart, Basic Station successfully reported:
+
+    GPS move 0.0000000,0.0000000 => 45.2921219,-75.8641510
+    GPS fix: 45.2921219,-75.8641510 alt=133.3 dilution=0.800000 satellites=7 quality=1
+
+Therefore, the old `AT+QGPSLOC=2` polling script is not required to provide
+live GNSS data to Basic Station. The production firmware should configure
+Basic Station to read `/dev/ttyUSB1` directly.
+
+The recovered polling scripts remain useful as historical prototypes and
+possibly as independent diagnostic tools, but they should not be the
+primary Basic Station location source.
+
+Hosted TTN currently exposes the Basic Station `gps` feature in
+`gs.status.receive`, but the observed status event still does not contain
+latitude, longitude, altitude, or `antenna_locations`. TTN-visible location
+must therefore still be updated through the gateway registry API unless
+server-side Basic Station GPS-event handling changes.
+
+Do not configure `"pps": "gps"` until a valid hardware PPS path has been
+identified and tested. NMEA time sentences alone are not equivalent to a
+PPS timing signal.
